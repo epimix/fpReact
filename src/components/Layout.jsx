@@ -19,6 +19,11 @@ const items = [
         label: <Link to="/films">Films</Link>,
         icon: <DatabaseFilled />,
     },
+    {
+        key: '3',
+        label: <Link to="/create">CreateFilm</Link>,
+        icon: <DatabaseFilled />,
+    },
 ]
 
 const Layout = () => {
