@@ -8,39 +8,36 @@ import {
     Select,
     Space,
     Upload,
+    DatePicker
 } from 'antd';
-import { createFilm, loadCategories } from '../services/film.servise';
+import { createFilm, createSession, loadCategories } from '../services/film.servise';
 import { useMessage } from '../hooks/useMessage';
-const { TextArea } = Input;
 
 const normFile = (e) => {
     return e?.file.originFileObj;
 };
 
+const onChange = (date, dateString) => {
+    console.log(date, dateString);
+  };
+
+  const handleChange = (value) => {
+    console.log(`selected ${value}`);
+  };
 const tailLayout = {
     wrapperCol: { offset: 4, span: 16 },
 };
 
-const FilmForm = () => {
-    const [categories, setCategories] = useState([]);
+const FormSession = () => {
     const { contextHolder, showSuccess, showError } = useMessage();
-
-    useEffect(() => {
-        fetchCategories();
-    }, []);
-
-    async function fetchCategories() {
-        const data = await loadCategories();
-        setCategories(data || []);
-    }
-
+    
     const onSubmit = async (item) => {
-        const res = await createFilm(item);
-        console.log(item);
+        const res = await createSession(item);
+
         if (!res)
-            showError('Failed to create Film!');
+            showError('Failed to create session!');
         else
-            showSuccess('Film created successfully!');
+            showSuccess('Session created successfully!');
     }
 
     return (
@@ -54,23 +51,26 @@ const FilmForm = () => {
                 style={{ maxWidth: 600 }}
                 onFinish={onSubmit}
             >
-                <Form.Item label="Title" name="title">
+                <Form.Item label="Title of film" name="title">
                     <Input />
                 </Form.Item>
-                
 
                 <Form.Item label="Duration" name="duration">
-                    <InputNumber addonAfter="m" />
+                    <DatePicker onChange={onChange} />
                 </Form.Item>
 
                 <Form.Item label="Category" name="category">
-                    <Select
-                        options={categories.map(cat => ({ label: cat.id || cat, value: cat }))}
-                    />
-                </Form.Item>
-
-                <Form.Item label="Year" name="year">
-                    <InputNumber/>
+                <Select
+      defaultValue="1 hall"
+      style={{ width: 120 }}
+      onChange={handleChange}
+      options={[
+        { value: '1', label: '1hall' },
+        { value: '2', label: '2hall' },
+        { value: '3', label: '3hall' },
+        { value: '4', label: '4hall' },
+      ]}
+    />
                 </Form.Item>
 
                 {/* <Form.Item label="Upload" name="image" valuePropName="fileList" getValueFromEvent={normFile}>
@@ -85,17 +85,12 @@ const FilmForm = () => {
                     </Upload>
                 </Form.Item> */}
                 <Form.Item
-                    name="poster"
-                    label="Poster URL"
+                    name="number"
+                    label="Number"
                 >
-                    <Input placeholder="Enter product image URL" />
-                </Form.Item>
-
-                <Form.Item
-                    name="trailer"
-                    label="Trailer URL"
-                >
-                    <Input placeholder="Enter film trailer URL" />
+                    <Space.Compact>
+        <Input placeholder="+380..." />
+    </Space.Compact>
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>
@@ -112,4 +107,4 @@ const FilmForm = () => {
         </>
     );
 };
-export default () => <FilmForm />;
+export default () => <FormSession />;

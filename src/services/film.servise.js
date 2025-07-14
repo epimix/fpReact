@@ -11,7 +11,7 @@ const deletefilm = async (id) => {
         }
         return true;
     } catch (error) {
-        console.error('Error deleting product:', error);
+        console.error('Error deleting flim:', error);
         return false;
     }
 }
@@ -24,7 +24,7 @@ const loadCategories = async () => {
         }
         return await response.json();
     } catch (error) {
-        console.error('Error deleting film:', error);
+        console.error('Error load categories:', error);
         return null;
     }
 }
@@ -39,5 +39,14 @@ const createFilm = async (model) => {
         return null;
     }
 }
+const createSession = async (model) => {
+    try {
+        const res = await axios.post(`https://fakestoreapi.com/products`, model);
+        return res.data;
+    } catch (error) {
+        console.error('Error deleting film:', error);
+        return null;
+    }
+}
 
-export { deletefilm,createFilm,loadCategories}
+export { deletefilm,createFilm,loadCategories,createSession}

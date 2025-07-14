@@ -8,6 +8,7 @@ import Home from './components/Home'
 import FilmList from './components/FilmList'
 import NoPage from './components/NoPage'
 import FilmForm from './components/FilmForm'
+import FormSession from './components/FormSession'
 
 function App() {
   return (
@@ -16,7 +17,8 @@ function App() {
         <Route path='/' element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="films" element={<FilmList />} />
-          <Route path="create" element={<FilmForm />} />
+          <Route path="createfilm" element={<FilmForm />} />
+          <Route path="createsession" element={<FormSession />} />
           <Route path="*" element={<NoPage />} />
         </Route>
       </Routes>

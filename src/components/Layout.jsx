@@ -21,7 +21,12 @@ const items = [
     },
     {
         key: '3',
-        label: <Link to="/create">CreateFilm</Link>,
+        label: <Link to="/createfilm">CreateFilm</Link>,
+        icon: <DatabaseFilled />,
+    },
+    {
+        key: '4',
+        label: <Link to="/createsession">CreateSession</Link>,
         icon: <DatabaseFilled />,
     },
 ]
