@@ -17,7 +17,8 @@ function App() {
         <Route path='/' element={<Layout />}>
           <Route index element={<Home />} />
           <Route path="films" element={<FilmList />} />
-          <Route path="createfilm" element={<FilmForm />} />
+          <Route path="create" element={<FilmForm />} />
+          <Route path="edit/:id" element={<FilmForm />} />
           <Route path="createsession" element={<FormSession />} />
           <Route path="*" element={<NoPage />} />
         </Route>

@@ -21,7 +21,7 @@ const items = [
     },
     {
         key: '3',
-        label: <Link to="/createfilm">CreateFilm</Link>,
+        label: <Link to="/create">CreateFilm</Link>,
         icon: <DatabaseFilled />,
     },
     {

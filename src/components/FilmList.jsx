@@ -1,12 +1,16 @@
 import React from 'react';
 import { Button, Popconfirm, Space, Table, Input, message } from 'antd';
 import { deletefilm } from '../services/film.servise';
+import { useMessage } from '../hooks/useMessage';
+import { Link } from 'react-router-dom';
+
 
 const api = `https://www.omdbapi.com/?apikey=20f8bd72&s=`;
 
 const FilmList = () => {
   const [films, setFilms] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
+  const { contextHolder, showSuccess, showError } = useMessage();
 
   const fetchFilms = async (query) => {
     if (!query) return setFilms([]);
@@ -65,7 +69,9 @@ const FilmList = () => {
       key: 'actions',
       render: (_, record) => (
         <Space size="middle">
-          <Button type="primary">Edit</Button>
+          <Link to={`/edit/${record.id}`}>
+                    <Button type="primary">Edit</Button>
+                </Link>
           <Popconfirm
             title="Delete the film"
             description={`Are you sure to delete ${record.title}?`}
@@ -90,7 +96,10 @@ const FilmList = () => {
         onSearch={handleSearch}
         style={{ width: 304, marginBottom: 16 }}
       />
-      <Table columns={columns} dataSource={films} loading={loading} />
+      <Link to="/create">
+                <Button type="primary" style={{ marginBottom: '12px' }}>Create New Film</Button>
+            </Link>
+      <Table columns={columns} dataSource={films} loading={loading} rowKey={i => i.id} />
     </>
   );
 };

@@ -19,21 +19,21 @@ const normFile = (e) => {
 
 const onChange = (date, dateString) => {
     console.log(date, dateString);
-  };
+};
 
-  const handleChange = (value) => {
+const handleChange = (value) => {
     console.log(`selected ${value}`);
-  };
+};
 const tailLayout = {
     wrapperCol: { offset: 4, span: 16 },
 };
 
 const FormSession = () => {
     const { contextHolder, showSuccess, showError } = useMessage();
-    
+
     const onSubmit = async (item) => {
         const res = await createSession(item);
-
+        console.log(item)
         if (!res)
             showError('Failed to create session!');
         else
@@ -60,17 +60,17 @@ const FormSession = () => {
                 </Form.Item>
 
                 <Form.Item label="Category" name="category">
-                <Select
-      defaultValue="1 hall"
-      style={{ width: 120 }}
-      onChange={handleChange}
-      options={[
-        { value: '1', label: '1hall' },
-        { value: '2', label: '2hall' },
-        { value: '3', label: '3hall' },
-        { value: '4', label: '4hall' },
-      ]}
-    />
+                    <Select
+                        defaultValue="1 hall"
+                        style={{ width: 120 }}
+                        onChange={handleChange}
+                        options={[
+                            { value: '1', label: '1hall' },
+                            { value: '2', label: '2hall' },
+                            { value: '3', label: '3hall' },
+                            { value: '4', label: '4hall' },
+                        ]}
+                    />
                 </Form.Item>
 
                 {/* <Form.Item label="Upload" name="image" valuePropName="fileList" getValueFromEvent={normFile}>
@@ -89,8 +89,8 @@ const FormSession = () => {
                     label="Number"
                 >
                     <Space.Compact>
-        <Input placeholder="+380..." />
-    </Space.Compact>
+                        <Input placeholder="+380..." />
+                    </Space.Compact>
                 </Form.Item>
 
                 <Form.Item {...tailLayout}>

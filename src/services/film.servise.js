@@ -49,4 +49,24 @@ const createSession = async (model) => {
     }
 }
 
-export { deletefilm,createFilm,loadCategories,createSession}
+const editFilm = async (model) => {
+    try {
+        const res = await axios.put(`https://www.omdbapi.com/?apikey=20f8bd72&s=${model.id}`, model);
+        return res.data;
+    } catch (error) {
+        console.error('Error updating film:', error);
+        return null;
+    }
+}
+
+const getFilmById = async (id) => {
+    try {
+        const res = await axios.get(`https://www.omdbapi.com/?apikey=20f8bd72&s=${id}`);
+        return res.data;
+    } catch (error) {
+        console.error('Error getting film by ID', error);
+        return null;
+    }
+}
+
+export { deletefilm,createFilm,loadCategories,createSession,getFilmById,editFilm}

@@ -9,8 +9,9 @@ import {
     Space,
     Upload,
 } from 'antd';
-import { createFilm, loadCategories } from '../services/film.servise';
+import { createFilm, loadCategories,getFilmById,editFilm } from '../services/film.servise';
 import { useMessage } from '../hooks/useMessage';
+import { useNavigate, useParams } from 'react-router-dom';
 const { TextArea } = Input;
 
 const normFile = (e) => {
@@ -24,10 +25,26 @@ const tailLayout = {
 const FilmForm = () => {
     const [categories, setCategories] = useState([]);
     const { contextHolder, showSuccess, showError } = useMessage();
+    const navigate = useNavigate();
+    let params = useParams();
+    const [editMode, setEditMode] = useState(false);
+
+    const [form] = Form.useForm();
 
     useEffect(() => {
         fetchCategories();
+
+        if (params.id) {
+            setEditMode(true);
+            loadFilmData(params.id);
+        }
     }, []);
+
+
+    async function loadFilmData(id) {
+        const product = await getFilmById(id);
+        form.setFieldsValue(product);
+    }
 
     async function fetchCategories() {
         const data = await loadCategories();
@@ -35,24 +52,41 @@ const FilmForm = () => {
     }
 
     const onSubmit = async (item) => {
-        const res = await createFilm(item);
-        console.log(item);
+        let res = false;
+
+        if (editMode) {
+            item.id = params.id;
+            res = await editFilm(item);
+        }
+        else {
+            res = await createFilm(item);
+        }
+
         if (!res)
-            showError('Failed to create Film!');
-        else
-            showSuccess('Film created successfully!');
+            showError(`Failed to ${editMode ? "update" : "create"} film!`);
+        else {
+            showSuccess(`Film ${editMode ? "updated" : "created"} successfully!`);
+            // TODO: show success message globally
+            // navigate('/products');
+        }
+
     }
+    const onCancel = () => {
+        navigate(-1);
+    };
+
 
     return (
         <>
             {contextHolder}
-            <h2>Create New Film</h2>
+            <h2>{editMode ? "Edit Film" : "Create New Film"}</h2>
             <Form
                 labelCol={{ span: 4 }}
                 wrapperCol={{ span: 14 }}
                 layout="horizontal"
                 style={{ maxWidth: 600 }}
                 onFinish={onSubmit}
+                form={form}
             >
                 <Form.Item label="Title" name="title">
                     <Input />
@@ -101,9 +135,9 @@ const FilmForm = () => {
                 <Form.Item {...tailLayout}>
                     <Space>
                         <Button type="primary" htmlType="submit">
-                            Create
+                        {editMode ? "Edit" : "Create"}
                         </Button>
-                        <Button htmlType="button">
+                        <Button htmlType="button" onClick={onCancel}>
                             Cancel
                         </Button>
                     </Space>
