@@ -10,7 +10,6 @@ import {
     Upload,
     DatePicker
 } from 'antd';
-import { createFilm, createSession, loadCategories } from '../services/film.servise';
 import { useMessage } from '../hooks/useMessage';
 
 const normFile = (e) => {

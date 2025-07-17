@@ -1,0 +1,18 @@
+body {
+    background: #fff;
+    color: #222;
+    font-family: 'Segoe UI', 'Roboto', 'Arial', sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.Layout {
+    min-height: 100vh;
+}
+
+.logo h2 {
+    color: #1677ff;
+    margin: 0;
+    font-weight: 700;
+    font-size: 2rem;
+}

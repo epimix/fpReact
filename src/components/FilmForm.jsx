@@ -9,7 +9,7 @@ import {
     Space,
     Upload,
 } from 'antd';
-import { createFilm, loadCategories,getFilmById,editFilm } from '../services/film.servise';
+import { createFilm, getFilmById, editFilm, getLocalFilms } from '../services/film.servise';
 import { useMessage } from '../hooks/useMessage';
 import { useNavigate, useParams } from 'react-router-dom';
 const { TextArea } = Input;
@@ -23,58 +23,59 @@ const tailLayout = {
 };
 
 const FilmForm = () => {
-    const [categories, setCategories] = useState([]);
     const { contextHolder, showSuccess, showError } = useMessage();
     const navigate = useNavigate();
     let params = useParams();
     const [editMode, setEditMode] = useState(false);
-
+    const [isLocal, setIsLocal] = useState(false);
     const [form] = Form.useForm();
 
     useEffect(() => {
-        fetchCategories();
-
         if (params.id) {
-            setEditMode(true);
-            loadFilmData(params.id);
+            const localFilm = getLocalFilms().find(f => String(f.id) === String(params.id));
+            if (localFilm) {
+                setEditMode(true);
+                setIsLocal(true);
+                form.setFieldsValue(localFilm);
+            } else {
+                setEditMode(false);
+                setIsLocal(false);
+                loadFilmData(params.id);
+            }
         }
     }, []);
 
-
     async function loadFilmData(id) {
         const product = await getFilmById(id);
-        form.setFieldsValue(product);
-    }
-
-    async function fetchCategories() {
-        const data = await loadCategories();
-        setCategories(data || []);
+        if (product) {
+            form.setFieldsValue({
+                title: product.title,
+                year: product.release_date ? Number(product.release_date.slice(0, 4)) : '',
+                poster: product.poster_path ? `https://image.tmdb.org/t/p/w200${product.poster_path}` : '',
+                duration: product.runtime || '',
+                trailer: '',
+            });
+        }
     }
 
     const onSubmit = async (item) => {
         let res = false;
-
-        if (editMode) {
+        if (editMode && isLocal) {
             item.id = params.id;
             res = await editFilm(item);
-        }
-        else {
+        } else {
             res = await createFilm(item);
         }
-
         if (!res)
             showError(`Failed to ${editMode ? "update" : "create"} film!`);
         else {
             showSuccess(`Film ${editMode ? "updated" : "created"} successfully!`);
-            // TODO: show success message globally
-            // navigate('/products');
+            navigate(-1);
         }
-
     }
     const onCancel = () => {
         navigate(-1);
     };
-
 
     return (
         <>
@@ -91,51 +92,28 @@ const FilmForm = () => {
                 <Form.Item label="Title" name="title">
                     <Input />
                 </Form.Item>
-                
-
                 <Form.Item label="Duration" name="duration">
                     <InputNumber addonAfter="m" />
                 </Form.Item>
-
-                <Form.Item label="Category" name="category">
-                    <Select
-                        options={categories.map(cat => ({ label: cat.id || cat, value: cat }))}
-                    />
-                </Form.Item>
-
                 <Form.Item label="Year" name="year">
-                    <InputNumber/>
+                    <InputNumber />
                 </Form.Item>
-
-                {/* <Form.Item label="Upload" name="image" valuePropName="fileList" getValueFromEvent={normFile}>
-                    <Upload multiple={false} action="/upload.do" listType="picture-card">
-                        <button
-                            style={{ color: 'inherit', cursor: 'inherit', border: 0, background: 'none' }}
-                            type="button"
-                        >
-                            <PlusOutlined />
-                            <div style={{ marginTop: 8 }}>Upload</div>
-                        </button>
-                    </Upload>
-                </Form.Item> */}
                 <Form.Item
                     name="poster"
                     label="Poster URL"
                 >
                     <Input placeholder="Enter product image URL" />
                 </Form.Item>
-
                 <Form.Item
                     name="trailer"
                     label="Trailer URL"
                 >
                     <Input placeholder="Enter film trailer URL" />
                 </Form.Item>
-
                 <Form.Item {...tailLayout}>
                     <Space>
                         <Button type="primary" htmlType="submit">
-                        {editMode ? "Edit" : "Create"}
+                            {editMode ? "Edit" : "Create"}
                         </Button>
                         <Button htmlType="button" onClick={onCancel}>
                             Cancel
