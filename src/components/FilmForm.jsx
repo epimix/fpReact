@@ -72,6 +72,7 @@ const FilmForm = () => {
             showSuccess(`Film ${editMode ? "updated" : "created"} successfully!`);
             navigate(-1);
         }
+        
     }
     const onCancel = () => {
         navigate(-1);

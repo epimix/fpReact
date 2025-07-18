@@ -1,8 +1,10 @@
 import React from 'react';
+import { HeartIcon, SpinnerIcon } from "./Icon";
 import { Button, Popconfirm, Space, Table, Input, message } from 'antd';
 import { getPopularFilms, searchFilms, getLocalFilms, deleteFilm } from '../services/film.servise';
 import { useMessage } from '../hooks/useMessage';
 import { Link } from 'react-router-dom';
+import "../App.css";
 
 const TMDB_IMAGE = 'https://image.tmdb.org/t/p/w200';
 
@@ -10,6 +12,38 @@ const FilmList = () => {
   const [films, setFilms] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
   const { contextHolder, showSuccess, showError } = useMessage();
+  const [liked, setLiked] = useState(false);
+  const [isFetching, setIsFetching] = useState(false);
+  const [error, setError] = useState(null);
+
+    const handleLikeUnlike = async () => {
+        setError(null);
+        setIsFetching(true);
+
+        try {
+            const response = await fetch(
+                "https://www.greatfrontend.com/api/questions/like-button",
+                {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                        action: liked ? "unlike" : "like",
+                    }),
+                }
+            );
+
+            if (response.status >= 200 && response.status < 300) {
+                setLiked(!liked);
+            } else {
+                const res = await response.json();
+                setError(res.message);
+                return;
+            }
+        } finally {
+            setIsFetching(false);
+        }
+    };
+
 
   React.useEffect(() => {
     const fetchData = async () => {
@@ -37,6 +71,9 @@ const FilmList = () => {
     fetchData();
   }, []);
 
+
+
+  
   const handleSearch = async (value) => {
     if (!value) {
       const tmdb = await getPopularFilms();
@@ -120,7 +157,15 @@ const FilmList = () => {
       title: 'Actions',
       key: 'actions',
       render: (_, record) => (
+
         <Space size="middle">
+          <button
+                onClick={handleLikeUnlike}
+                className={`likeBtn ${liked ? "liked" : ""}`}
+            >
+                {isFetching ? <SpinnerIcon /> : <HeartIcon />}
+                {liked ? "Liked" : "Like"}
+            </button>
           <Link to={record.isLocal ? `/edit/${record.id}` : `/edit-tmdb/${record.id}`}>
             <Button type="primary">Edit</Button>
           </Link>
