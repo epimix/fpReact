@@ -1,10 +1,11 @@
-import React from 'react';
+import React , {useContext} from 'react';
 import { Breadcrumb, Layout as LayoutAntd, Menu, theme } from 'antd';
 import {
     DatabaseFilled,
     HomeFilled,
 } from '@ant-design/icons';
 import { Link, Outlet } from 'react-router-dom';
+import { likeContext } from '../contexts/likeContext';
 
 const { Header, Content, Footer } = LayoutAntd;
 
@@ -32,6 +33,9 @@ const items = [
 ]
 
 const Layout = () => {
+
+    const {state} = useContext(likeContext);
+
     const {
         token: { colorBgContainer, borderRadiusLG },
     } = theme.useToken();
@@ -48,6 +52,7 @@ const Layout = () => {
                     items={items}
                     style={{ flex: 1, minWidth: 0 }}
                 />
+                <h4>count of liked ({state})</h4>
             </Header>
 
             <Content style={{ padding: '0 48px' }}>
