@@ -13,7 +13,7 @@ const FilmList = () => {
   const [films, setFilms] = useState([]);
   const [loading, setLoading] = useState(false);
   const { contextHolder, showSuccess, showError } = useMessage();
-  const [state, setState] = useContext(likeContext);
+  const {state, setState} = useContext(likeContext);
 
   useEffect(() => {
     const fetchData = async () => {
