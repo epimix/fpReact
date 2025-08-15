@@ -1,7 +1,6 @@
 import { useCallback } from 'react';
 import { message } from 'antd';
 
-// TODO: talk about useCallback and useMemo
 export function useMessage() {
     const [messageApi, contextHolder] = message.useMessage();
 

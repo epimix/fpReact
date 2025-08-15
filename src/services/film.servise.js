@@ -87,6 +87,21 @@ const deleteFilm = (id) => {
     return true;
 };
 
+const getFilmTrailers = async (id) => {
+    try {
+        const res = await axios.get(`${TMDB_BASE_URL}/movie/${id}/videos`, {
+            params: {
+                api_key: TMDB_API_KEY,
+                language: "en-US",
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.error("Error getting film trailers:", error);
+        return null;
+    }
+};
+
 export {
     getPopularFilms,
     searchFilms,
@@ -95,4 +110,5 @@ export {
     createFilm,
     editFilm,
     deleteFilm,
+    getFilmTrailers,
 };
